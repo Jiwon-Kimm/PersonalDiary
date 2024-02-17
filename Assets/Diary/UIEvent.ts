@@ -9,11 +9,11 @@ export default class UIEvent extends ZepetoScriptBehaviour {
     public inputFieldUI: InputField;
     public createBtn: Button;
     public deleteBtn: Button;
-    public cubeArray: GameObject[]; // Å¸ÀÔÀ» GameObject[]·Î ¸í½Ã
-    private canvasTransform: Transform; // CanvasÀÇ TransformÀ» ÀúÀåÇÒ º¯¼ö ¼±¾ğ
+    public cubeArray: GameObject[]; // íƒ€ì…ì„ GameObject[]ë¡œ ëª…ì‹œ
+    private canvasTransform: Transform; // Canvasì˜ Transformì„ ì €ì¥í•  ë³€ìˆ˜ ì„ ì–¸
 
     Start() {
-        // Canvas ¿ÀºêÁ§Æ® Ã£±â ¹× Transform ÂüÁ¶ ÀúÀå
+        // Canvas ì˜¤ë¸Œì íŠ¸ ì°¾ê¸° ë° Transform ì°¸ì¡° ì €ì¥
         this.canvasTransform = GameObject.Find("Canvas").GetComponent<Transform>();
 
         this.sliderUI.maxValue = 180;
@@ -43,8 +43,12 @@ export default class UIEvent extends ZepetoScriptBehaviour {
             let textBoxObj = GameObject.Instantiate(this.inputFieldUI.gameObject, new Vector3(i * 100, -3.5, 0), Quaternion.identity) as GameObject;
             textBoxObj.name = "InputField_" + i;
 
-            // CanvasÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤
+            // Canvasì˜ ìì‹ìœ¼ë¡œ ì„¤ì •
             textBoxObj.transform.SetParent(this.canvasTransform, false);
+
+            // Set the text content of the textbox to empty
+            let textComponent = textBoxObj.GetComponentInChildren(Text);
+            textComponent.text = "";
 
             this.cubeArray.push(textBoxObj);
         }
