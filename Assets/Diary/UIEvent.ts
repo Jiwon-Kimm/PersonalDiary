@@ -46,10 +46,6 @@ export default class UIEvent extends ZepetoScriptBehaviour {
             // Canvas의 자식으로 설정
             textBoxObj.transform.SetParent(this.canvasTransform, false);
 
-            // Set the text content of the textbox to empty
-            let textComponent = textBoxObj.GetComponentInChildren(Text);
-            textComponent.text = "";
-
             this.cubeArray.push(textBoxObj);
         }
     }
