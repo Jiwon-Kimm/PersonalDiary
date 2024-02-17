@@ -1,4 +1,4 @@
-import { ZepetoScriptBehaviour } from 'ZEPETO.Script'
+import { ZepetoScriptBehaviour } from 'ZEPETO.Script';
 import { GameObject, Transform, Quaternion, Vector3 } from "UnityEngine";
 import { Button, InputField, Slider } from "UnityEngine.UI";
 
@@ -9,11 +9,11 @@ export default class UIEvent extends ZepetoScriptBehaviour {
     public inputFieldUI: InputField;
     public createBtn: Button;
     public deleteBtn: Button;
-    public cubeArray: GameObject[]; // 타입을 GameObject[]로 명시
-    private canvasTransform: Transform; // Canvas의 Transform을 저장할 변수 선언
+    public cubeArray: GameObject[] = []; // 초기화를 여기서 직접 해줍니다.
+    private canvasTransform: Transform;
+    private textBoxCount: number = 0; // textBox의 총 개수를 추적하는 변수를 추가합니다.
 
     Start() {
-        // Canvas 오브젝트 찾기 및 Transform 참조 저장
         this.canvasTransform = GameObject.Find("Canvas").GetComponent<Transform>();
 
         this.sliderUI.maxValue = 180;
@@ -21,7 +21,6 @@ export default class UIEvent extends ZepetoScriptBehaviour {
             this.cubeTransform.rotation = Quaternion.Euler(0, v, 0);
         });
 
-        this.cubeArray = [];
         this.createBtn.onClick.AddListener(() => {
             this.TextBoxCreate();
         });
@@ -31,23 +30,22 @@ export default class UIEvent extends ZepetoScriptBehaviour {
     }
 
     TextBoxCreate() {
-        var createCnt = Number(this.inputFieldUI.text);
+        let createCnt = Number(this.inputFieldUI.text);
 
         if (isNaN(createCnt) || createCnt <= 0) {
             return;
         }
 
-        this.CubeDeleteAll();
-
-        for (var i = 0; i < createCnt; ++i) {
-            let textBoxObj = GameObject.Instantiate(this.inputFieldUI.gameObject, new Vector3(i * 100, -3.5, 0), Quaternion.identity) as GameObject;
-            textBoxObj.name = "InputField_" + i;
-
-            // Canvas의 자식으로 설정
+        // 기존에 생성된 textBox가 사라지지 않고, 새로운 textBox가 추가되도록 수정합니다.
+        for (let i = this.textBoxCount; i < this.textBoxCount + createCnt; ++i) {
+            let textBoxObj = GameObject.Instantiate(this.inputFieldUI.gameObject, new Vector3(-330 + i * 150, 215 - i * 50, 0), Quaternion.identity) as GameObject;
+            textBoxObj.name = `InputField_${i}`;
             textBoxObj.transform.SetParent(this.canvasTransform, false);
-
             this.cubeArray.push(textBoxObj);
         }
+
+        // textBoxCount를 업데이트합니다.
+        this.textBoxCount += createCnt;
     }
 
     CubeDeleteAll() {
@@ -55,5 +53,6 @@ export default class UIEvent extends ZepetoScriptBehaviour {
             GameObject.Destroy(obj);
         }
         this.cubeArray = [];
+        this.textBoxCount = 0; // CubeDeleteAll이 호출될 때 textBoxCount를 리셋합니다.
     }
 }
